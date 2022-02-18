@@ -55,11 +55,6 @@ function onInputchanged(even){
     updateForm();
 }
 
-//金額の表示を更新する関数
-function updateForm(){
-
-}
-
 //税抜き金額の税込み金額に変換する関数
 function incTax(untaxed){
     return Math.floor(untaxed * (1 + taxRate))
@@ -77,7 +72,25 @@ function taxedBasePrice(){
 
 //再計算したオプション料金(税込)を返す関数
 function taxedOptPrice(){
+    //オプション料金
+    var optPrice = 0;
+    //フォームコントロールを取得
+    var opt1 = app.querySelector('#opt1'); //BGM手配
+    var opt2 = app.querySelector('#opt2'); //撮影
+    var opt3 = app.querySelector('#opt3'); //DVD盤面印刷
+    var opt4 = app.querySelector('#opt4'); //写真スキャニング
+    //BGM手配
+    if(opt1.checked){optPrice += 5000;}
+    //撮影
+    if(opt2.checked){optPrice += 5000;}
+    //DVD盤面印刷
+    if(opt3.checked){optPrice += 5000;}
+    //写真スキャニング
+    if(opt4.value == ''){opt4 = 0;}
+    optPrice += opt4.value * 500;
     //オプション料金(税込)を返す
+    return incTax(optPrice);
+
 }
 
 //金額の表示を更新する関数
@@ -98,5 +111,51 @@ function updateForm(){
     sum_total.value = number_format(totalPraice);
 }
 
-//TODO残りの処理実装
+//日付けの差を求める関数
+function getDateDiff(dateString1, dateString2){
+    //日付けを表す文字列から日付けオブジェクトを生成
+    var date1 = new Date(dateString1);
+    var date2 = new Date(dateString2);
+    //2つの日付の差分を計算
+    var msDiff = date1.getTime() - date2.getTime();
+    //求めた差分を日付けに変換
+    //差分/(1000ミリ秒×60秒×60分×24時間)
+    return Math.ceil(msDiff / (1000*60*60*24));
+}
+
+//再計算した基本料金(税込)を返す関数
+function taxedBasePrice(){
+    //割増料金
+    var addPrice =0;
+    //フォームコントロールを取得(DVD仕上がり予定日)
+    var delivery_date = app.querySelector('#delivery_date');
+    //納期までの残り日数を計算
+    var dateDiff = geetDateDiff(delivery_date.value,(new Date()).toLocaleString);
+
+    //割増料金を求める
+    if (21 <= dateDiff && dateDiff < 30){
+        //納期が一か月未満の場合
+        addPrice = 5000;
+    }else if(14 <= dateDiff && dateDiff < 14){
+        //納期が2週間未満の場合
+        addPrice = 15000;
+    }else if( 3 < dateDiff && dateDiff < 7){
+        //納期が1週間未満の場合
+        addPrice = 20000;
+    }else if(dateDiff == 3){
+        //納期の3日後の場合
+        addPrice = 40000;
+    }else if(dateDiff == 2){
+        //納期の2日後の場合
+        addPrice = 45000;
+    }else if(dateDiff == 1){
+        //納期の1日後の場合
+        addPrice = 50000;
+    }
+    //基本料金(税込)を返す
+    return incTax(30000 + addPrice);
+}
+
+
+
 
