@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+    <div id="app">
+       <select>
+           
+               <option is="my-option" v-for="item in products" v-bind="item" v-bind:key="item.id"></option>
+           
+       </select>
+    </div>
+<script src="https://jp.vuejs.org/js/vue.js"></script>
+<script src="my-option.js"></script>
+<script src="main1.js"></script>
+</body>
+</html>
